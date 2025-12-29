@@ -25,6 +25,10 @@ bin/
 .env
 *.log
 
+# Application properties (contain sensitive data)
+application-dev.properties
+application-prod.properties
+
 # OS
 .DS_Store
 Thumbs.db
