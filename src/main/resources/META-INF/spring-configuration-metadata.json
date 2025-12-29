@@ -1,0 +1,25 @@
+{
+  "properties": [
+    {
+      "name": "cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "Comma-separated list of allowed CORS origins"
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "Secret key for JWT token signing (minimum 256 bits)"
+    },
+    {
+      "name": "jwt.expiration",
+      "type": "java.lang.Long",
+      "description": "JWT token expiration time in milliseconds"
+    },
+    {
+      "name": "github.api.url",
+      "type": "java.lang.String",
+      "description": "GitHub API base URL"
+    }
+  ]
+}
+
