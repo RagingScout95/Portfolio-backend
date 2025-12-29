@@ -44,5 +44,26 @@ public class AuthService {
         admin.setEmail(email);
         adminRepository.save(admin);
     }
+
+    public void setPassword(String username, String password, String email) {
+        Optional<Admin> adminOpt = adminRepository.findByUsername(username);
+        
+        if (adminOpt.isPresent()) {
+            // Update existing admin
+            Admin admin = adminOpt.get();
+            admin.setPassword(passwordEncoder.encode(password));
+            if (email != null && !email.isEmpty()) {
+                admin.setEmail(email);
+            }
+            adminRepository.save(admin);
+        } else {
+            // Create new admin
+            Admin admin = new Admin();
+            admin.setUsername(username);
+            admin.setPassword(passwordEncoder.encode(password));
+            admin.setEmail(email != null ? email : username + "@ragingscout97.in");
+            adminRepository.save(admin);
+        }
+    }
 }
 

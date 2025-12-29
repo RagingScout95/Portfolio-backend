@@ -1,13 +1,14 @@
 package com.ragingscout.portfolio.config;
 
-import com.ragingscout.portfolio.entity.Admin;
-import com.ragingscout.portfolio.repository.AdminRepository;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import com.ragingscout.portfolio.entity.Admin;
+import com.ragingscout.portfolio.repository.AdminRepository;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -20,16 +21,13 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Create default admin if none exists
+        // Admin accounts should be created/updated via API: POST /api/auth/set-password
+        // This allows setting passwords without direct database access
         Optional<Admin> existingAdmin = adminRepository.findByUsername("admin");
         if (existingAdmin.isEmpty()) {
-            Admin admin = new Admin();
-            admin.setUsername("admin");
-            admin.setPassword(passwordEncoder.encode("admin123")); // Change this password!
-            admin.setEmail("admin@ragingscout97.in");
-            adminRepository.save(admin);
-            System.out.println("Default admin created: username=admin, password=admin123");
-            System.out.println("PLEASE CHANGE THE DEFAULT PASSWORD!");
+            System.out.println("INFO: No admin user found.");
+            System.out.println("Use the API to create admin: POST /api/auth/set-password");
+            System.out.println("Required fields: username, password, email (optional)");
         }
     }
 }
