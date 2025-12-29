@@ -26,6 +26,9 @@ public class Profile {
     @Column(name = "photo_url")
     private String photoUrl;
     
+    @Column(name = "favicon_url")
+    private String faviconUrl;
+    
     @Column(columnDefinition = "TEXT")
     private String about;
 }

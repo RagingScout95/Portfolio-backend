@@ -1,276 +1,289 @@
-# Portfolio Admin Dashboard Setup Guide
+# Portfolio Backend API
 
-This guide will help you set up the complete admin dashboard system for your portfolio.
+A robust Spring Boot REST API backend for managing portfolio content with JWT authentication, PostgreSQL database, and comprehensive CRUD operations.
 
-## Architecture
+## 🚀 Features
 
-- **Backend**: Spring Boot REST API (Port: 8080)
-- **Admin Dashboard**: Angular application (Port: 4200)
-- **Database**: PostgreSQL
-- **Domains**:
-  - Portfolio: ragingscout97.in
-  - API: api.ragingscout97.in
-  - Admin: admin.ragingscout97.in
+- **RESTful API** - Complete CRUD operations for portfolio management
+- **JWT Authentication** - Secure admin authentication with token-based authorization
+- **PostgreSQL Database** - Reliable data persistence
+- **Environment-based Configuration** - Separate dev and prod configurations
+- **Spring Security** - Protected admin endpoints with public API access
+- **Cross-Origin Support** - CORS configuration for frontend integration
+- **Profile Management** - Personal information, photo, and favicon
+- **Project Showcase** - Manage projects with tech stacks and links
+- **Experience Timeline** - Work history with detailed descriptions
+- **Skills Management** - Technical skills with display ordering
+- **Education Records** - Academic background information
+- **Social Links** - GitHub, LinkedIn, Instagram, CodeChef, and more
+- **Current Job** - Highlight current position
 
-## Prerequisites
+## 🛠️ Tech Stack
 
-1. Java 17 or higher
-2. Maven 3.6+
-3. Node.js 18+ and npm
-4. PostgreSQL 12+
-5. Angular CLI 19+
+- **Java 17+**
+- **Spring Boot 3.2.0**
+- **Spring Security** - JWT authentication
+- **Spring Data JPA** - Database operations
+- **PostgreSQL** - Primary database
+- **Maven** - Dependency management
+- **Lombok** - Reduced boilerplate code
+- **Spring Dotenv** - Environment variable management
 
-## Database Setup
+## 📋 Prerequisites
 
-1. Ensure PostgreSQL is running
-2. Create database (if needed):
+- Java 17 or higher
+- Maven 3.6+
+- PostgreSQL 12+
+
+## ⚙️ Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/RagingScout95/Portfolio-backend.git
+cd Portfolio-backend
+```
+
+### 2. Database Setup
+
+Create PostgreSQL databases:
+
 ```sql
-CREATE DATABASE postgres;
+CREATE DATABASE portfolio_dev;
+CREATE DATABASE portfolio_prod;
 ```
 
-3. Database credentials (as specified):
-   - Host: localhost
-   - Port: 5432
-   - Database: postgres
-   - Username: postgres
-   - Password: root
+### 3. Environment Configuration
 
-## Backend Setup
+Create a `.env` file in the project root:
 
-**⚠️ Important: All commands below must be run from the `portfolio-backend` directory.**
+```env
+# Development Database
+DB_HOST_DEV=localhost
+DB_PORT_DEV=5432
+DB_NAME_DEV=portfolio_dev
+DB_USERNAME_DEV=postgres
+DB_PASSWORD_DEV=your_password
 
-1. Navigate to backend directory:
-```bash
-cd portfolio-backend
+# Production Database
+DB_HOST_PROD=your_prod_host
+DB_PORT_PROD=5432
+DB_NAME_PROD=portfolio_prod
+DB_USERNAME_PROD=your_prod_username
+DB_PASSWORD_PROD=your_prod_password
+
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key-min-256-bits
+JWT_EXPIRATION=86400000
+
+# CORS Origins
+CORS_ALLOWED_ORIGINS=http://localhost:4200,http://localhost:4201
 ```
 
-2. Create `.env` file:
-   - The `.env` file should already exist in the `portfolio-backend` directory
-   - Edit it with your actual values
-   - **Important**: Never commit the `.env` file to version control
+> **Note:** Never commit the `.env` file to version control. It's already in `.gitignore`.
 
-3. Load environment variables:
-   - Spring Boot reads environment variables automatically
-   - You can export variables from `.env` manually or use IDE plugins
-   - Most IDEs (IntelliJ, VS Code) can load `.env` files automatically
+### 4. Build the Project
 
-4. Build the project:
 ```bash
-# Make sure you're in portfolio-backend directory
-cd portfolio-backend
 mvn clean install
 ```
 
-5. Run the application:
+## 🚀 Running the Application
 
-**Development Mode:**
+### Development Mode
+
 ```bash
-# From portfolio-backend directory
-# For Windows PowerShell, use quotes:
-mvn spring-boot:run "-Dspring-boot.run.arguments=--spring.profiles.active=dev"
-
-# For Linux/Mac/bash:
 mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=dev
 ```
 
-**Production Mode:**
-```bash
-# From portfolio-backend directory
-# For Windows PowerShell, use quotes:
-mvn spring-boot:run "-Dspring-boot.run.arguments=--spring.profiles.active=prod"
+### Production Mode
 
-# For Linux/Mac/bash:
+```bash
 mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=prod
 ```
 
-**Alternative: Run from JAR file (after building):**
-```bash
-# Make sure you're in portfolio-backend directory
-cd portfolio-backend
+The API will start on `http://localhost:8080`
 
-# Build JAR first
-mvn clean package
+## 📚 API Endpoints
 
-# Run JAR in development
-java -jar target/portfolio-backend-1.0.0.jar --spring.profiles.active=dev
+### Authentication
 
-# Run JAR in production
-java -jar target/portfolio-backend-1.0.0.jar --spring.profiles.active=prod
-```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/login` | Admin login |
 
-The backend will start on `http://localhost:8080` (or the port specified in `SERVER_PORT` environment variable).
+### Public Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/public/portfolio` | Get all portfolio data |
+
+### Admin Endpoints (Requires JWT)
+
+#### Profile
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/profile` | Get profile |
+| PUT | `/api/admin/profile` | Update profile |
+
+#### Projects
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/projects` | Get all projects |
+| POST | `/api/admin/projects` | Create project |
+| PUT | `/api/admin/projects/{id}` | Update project |
+| DELETE | `/api/admin/projects/{id}` | Delete project |
+
+#### Experience
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/experiences` | Get all experiences |
+| POST | `/api/admin/experiences` | Create experience |
+| PUT | `/api/admin/experiences/{id}` | Update experience |
+| DELETE | `/api/admin/experiences/{id}` | Delete experience |
+
+#### Skills
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/skills` | Get all skills |
+| POST | `/api/admin/skills` | Create skill |
+| PUT | `/api/admin/skills/{id}` | Update skill |
+| DELETE | `/api/admin/skills/{id}` | Delete skill |
+
+#### Education
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/educations` | Get all educations |
+| POST | `/api/admin/educations` | Create education |
+| PUT | `/api/admin/educations/{id}` | Update education |
+| DELETE | `/api/admin/educations/{id}` | Delete education |
+
+#### Social Links
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/social-links` | Get all social links |
+| POST | `/api/admin/social-links` | Create social link |
+| PUT | `/api/admin/social-links/{id}` | Update social link |
+| DELETE | `/api/admin/social-links/{id}` | Delete social link |
+
+#### Current Job
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/current-job` | Get current job |
+| PUT | `/api/admin/current-job` | Update current job |
+
+## 🔒 Security
+
+- **JWT Authentication** - All admin endpoints require valid JWT tokens
+- **Password Encryption** - BCrypt password hashing
+- **CORS Protection** - Configured allowed origins
+- **Environment Variables** - Sensitive data stored securely
 
 ### Default Admin Credentials
 
-On first run, a default admin user is created:
-- **Username**: admin
-- **Password**: admin123
+On first run, a default admin account is created:
+- Username: `admin`
+- Password: `admin123`
 
-**⚠️ IMPORTANT: Change this password immediately after first login!**
+> **⚠️ IMPORTANT:** Change the default password immediately after first login!
 
-## Environment Variables
+## 📁 Project Structure
 
-The `.env` file should contain the following variables:
-
-### Database Configuration
-- `DB_HOST` - Database host (default: localhost)
-- `DB_PORT` - Database port (default: 5432)
-- `DB_NAME` - Database name (default: postgres)
-- `DB_USERNAME` - Database username (default: postgres)
-- `DB_PASSWORD` - Database password (default: root)
-
-### Server Configuration
-- `SERVER_PORT` - Server port (default: 8080)
-
-### JWT Configuration
-- `JWT_SECRET` - JWT secret key (REQUIRED in production, minimum 256 bits)
-- `JWT_EXPIRATION` - Token expiration in milliseconds (default: 86400000)
-
-### CORS Configuration
-- `CORS_ALLOWED_ORIGINS` - Comma-separated list of allowed origins
-
-### GitHub API
-- `GITHUB_API_URL` - GitHub API URL (default: https://api.github.com)
-
-**Note**: Spring Boot automatically reads environment variables. Properties files (`application-dev.properties`, `application-prod.properties`) have default values if environment variables are not set.
-
-## Admin Dashboard Setup
-
-1. Navigate to admin dashboard directory:
-```bash
-cd portfolio-admin
+```
+src/main/java/com/ragingscout/portfolio/
+├── config/              # Configuration classes
+├── controller/          # REST controllers
+├── dto/                 # Data transfer objects
+├── entity/              # JPA entities
+├── repository/          # Data repositories
+├── security/            # Security configurations
+└── service/             # Business logic
 ```
 
-2. Install dependencies:
+## 🧪 Testing
+
 ```bash
-npm install
+mvn test
 ```
 
-3. Update API URL in services (if needed):
-   - Edit `src/app/services/auth.service.ts`
-   - Edit `src/app/services/portfolio.service.ts`
-   - Edit `src/app/services/github.service.ts`
-   - Change `http://localhost:8080/api` to `https://api.ragingscout97.in/api` for production
+## 📦 Building for Production
 
-4. Run development server:
 ```bash
-npm start
+mvn clean package -DskipTests
 ```
 
-5. Build for production:
-```bash
-npm run build
-```
+The JAR file will be created in the `target/` directory.
 
-## Production Deployment
+## 🚢 Deployment
 
-### Backend
+### Using JAR
 
-1. Update `.env` file (or set environment variables):
-   - Set proper database connection (DB_HOST, DB_PORT, DB_NAME, DB_USERNAME, DB_PASSWORD)
-   - Set `JWT_SECRET` environment variable (minimum 256 bits)
-   - Update CORS allowed origins (CORS_ALLOWED_ORIGINS)
-   
-   The application will automatically read from environment variables or `.env` file.
-
-2. Build JAR:
-```bash
-mvn clean package
-```
-
-3. Run:
 ```bash
 java -jar target/portfolio-backend-1.0.0.jar --spring.profiles.active=prod
 ```
 
-### Admin Dashboard
+### Using Docker (Optional)
 
-1. Update API URLs in services to use `https://api.ragingscout97.in`
-2. Build:
-```bash
-npm run build
+```dockerfile
+FROM openjdk:17-jdk-slim
+COPY target/portfolio-backend-1.0.0.jar app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
 ```
-3. Deploy `dist/portfolio-admin` to `admin.ragingscout97.in`
 
-## Features
+## 🔧 Configuration Files
 
-### Admin Dashboard Features
+- `application-dev.properties` - Development environment
+- `application-prod.properties` - Production environment
+- `.env` - Environment variables (not in repo)
 
-1. **Profile Management**
-   - Edit name, role, tagline
-   - Update photo URL
-   - Edit about me section
+## 📝 Database Schema
 
-2. **Projects Management**
-   - Add projects manually
-   - Import projects from GitHub
-   - Edit project details (title, description, tech stack, links, images)
-   - Drag and drop to reorder projects
-   - Delete projects
+The application uses JPA to automatically create/update the database schema. Tables include:
+- `profiles` - User profile information
+- `projects` - Project showcase
+- `experiences` - Work history
+- `skills` - Technical skills
+- `educations` - Academic background
+- `social_links` - Social media links
+- `current_job` - Current position
+- `admins` - Admin users
 
-3. **Education Management**
-   - Add/Edit/Delete education entries
-   - Manage degree, institute, year
+## 🤝 Contributing
 
-4. **Skills Management**
-   - Add/Delete skills
-   - Skills are displayed as tags
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
 
-5. **Experience Management**
-   - Add/Edit/Delete work experiences
-   - Manage role, company, dates, descriptions
+## 📄 License
 
-6. **Social Links Management**
-   - Add/Edit/Delete social media links
-   - Manage name, URL, icon
+This project is open source and available under the MIT License.
 
-7. **Current Job Management**
-   - Edit current job title, company, since date, description
+## 🐛 Troubleshooting
 
-## API Endpoints
+### Database Connection Issues
+- Verify PostgreSQL is running
+- Check database credentials in `.env`
+- Ensure databases are created
 
-### Public Endpoints
-- `GET /api/public/portfolio` - Get all portfolio data (for frontend)
+### JWT Token Errors
+- Verify JWT_SECRET is set correctly
+- Check token expiration time
+- Ensure Authorization header format: `Bearer <token>`
 
-### Authentication
-- `POST /api/auth/login` - Login with username/password
+### Port Already in Use
+```bash
+# Find process using port 8080
+netstat -ano | findstr :8080
+# Kill the process
+taskkill /PID <pid> /F
+```
 
-### Admin Endpoints (Requires JWT Token)
-- Profile: `GET /api/admin/profile`, `PUT /api/admin/profile`
-- Projects: `GET /api/admin/projects`, `POST /api/admin/projects`, `PUT /api/admin/projects/{id}`, `DELETE /api/admin/projects/{id}`, `POST /api/admin/projects/reorder`
-- GitHub: `GET /api/admin/github/repos/{username}`, `POST /api/admin/github/import/{username}`, `POST /api/admin/github/import-single`
-- Similar endpoints for educations, skills, experiences, social-links, and current-job
+## 📞 Support
 
-## Security Notes
+For issues and questions, please open an issue on GitHub.
 
-1. **JWT Secret**: Use a strong secret (minimum 256 bits) in production
-2. **Password**: Change default admin password immediately
-3. **HTTPS**: Use HTTPS in production
-4. **CORS**: Configure CORS properly for production domains
+---
 
-## Troubleshooting
-
-### Backend won't start
-- Check PostgreSQL is running
-- Verify database credentials in `.env` file or `application-dev.properties` / `application-prod.properties`
-- Check port 8080 is available
-
-### Admin dashboard can't connect to API
-- Verify backend is running
-- Check API URL in services
-- Check CORS configuration in backend
-- Verify JWT token is being sent in requests
-
-### GitHub import not working
-- Check internet connection
-- Verify GitHub username is correct
-- Check GitHub API rate limits
-
-## Next Steps
-
-1. Update your portfolio frontend to fetch data from `/api/public/portfolio`
-2. Configure production domains
-3. Set up SSL certificates
-4. Configure reverse proxy (nginx/Apache) for domains
-5. Set up CI/CD pipeline if needed
-
+Built with ❤️ using Spring Boot
