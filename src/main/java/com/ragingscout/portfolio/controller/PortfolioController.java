@@ -2,13 +2,16 @@ package com.ragingscout.portfolio.controller;
 
 import com.ragingscout.portfolio.entity.*;
 import com.ragingscout.portfolio.service.PortfolioService;
+import com.ragingscout.portfolio.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -17,6 +20,9 @@ public class PortfolioController {
 
     @Autowired
     private PortfolioService portfolioService;
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     // Profile endpoints
     @GetMapping("/profile")
@@ -167,6 +173,21 @@ public class PortfolioController {
             .collect(Collectors.toList());
         portfolioService.reorderProjects(projectIds);
         return ResponseEntity.ok().build();
+    }
+
+    // File upload endpoint
+    @PostMapping("/upload")
+    public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            String fileUrl = fileStorageService.storeFile(file);
+            Map<String, String> response = new HashMap<>();
+            response.put("url", fileUrl);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(error);
+        }
     }
 }
 
