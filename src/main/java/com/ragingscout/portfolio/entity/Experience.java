@@ -30,7 +30,7 @@ public class Experience {
     @Column(nullable = false)
     private String toDate;
     
-    @ElementCollection
+    @ElementCollection(fetch = jakarta.persistence.FetchType.EAGER)
     @CollectionTable(name = "experience_descriptions", joinColumns = @JoinColumn(name = "experience_id"))
     @Column(name = "description", columnDefinition = "TEXT")
     private List<String> descriptions = new ArrayList<>();

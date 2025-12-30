@@ -20,7 +20,7 @@ echo   PORTFOLIO BACKEND DEPLOYMENT
 echo ========================================
 echo.
 
-echo [1/5] Building JAR with Maven...
+echo [1/6] Building JAR with Maven...
 where mvn >nul 2>&1
 if errorlevel 1 (
     set MVN_CMD=mvn.cmd
@@ -36,7 +36,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [2/5] Checking if JAR exists...
+echo [2/6] Checking if JAR exists...
 if not exist "%LOCAL_JAR%" (
     echo.
     echo [ERROR] JAR not found at %LOCAL_JAR%
@@ -48,7 +48,7 @@ if not exist "%LOCAL_JAR%" (
 echo [OK] Build complete: %LOCAL_JAR%
 echo.
 
-echo [3/5] Creating remote directory structure...
+echo [3/6] Creating remote directory structure...
 ssh %REMOTE_HOST% "sudo mkdir -p %REMOTE_RELEASES% && sudo chown $USER:$USER %REMOTE_APP_DIR% -R"
 if errorlevel 1 (
     echo.
@@ -58,7 +58,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo [4/5] Uploading JAR to server...
+echo [4/6] Uploading JAR to server...
 scp "%LOCAL_JAR%" "%REMOTE_HOST%:%REMOTE_JAR%"
 if errorlevel 1 (
     echo.
@@ -68,13 +68,24 @@ if errorlevel 1 (
 )
 
 echo.
-echo [5/5] Switching active version and restarting service...
+echo [5/6] Switching active version...
 ssh %REMOTE_HOST% "ln -sfn %REMOTE_JAR% %REMOTE_APP_DIR%/current.jar"
 if errorlevel 1 (
     echo.
     echo [ERROR] Failed to create symlink
     pause
     exit /b 1
+)
+
+echo.
+echo [6/6] Cleaning up old JAR files...
+REM Only deletes files matching portfolio-backend-*.jar in /opt/portfolio-backend/releases directory
+REM Safe: Won't affect other projects as it's scoped to this project's directory and filename pattern
+ssh %REMOTE_HOST% "cd %REMOTE_RELEASES% && ls -1 %APP_NAME%-*.jar 2>/dev/null | grep -v '%APP_NAME%-%TIMESTAMP%.jar' | xargs -r rm -f"
+if errorlevel 1 (
+    echo [WARNING] Failed to clean up old JAR files (this is not critical)
+) else (
+    echo [OK] Old JAR files deleted
 )
 
 REM Check if service exists and restart it

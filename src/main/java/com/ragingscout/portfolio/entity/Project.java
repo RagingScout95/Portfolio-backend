@@ -24,7 +24,7 @@ public class Project {
     @Column(columnDefinition = "TEXT")
     private String description;
     
-    @ElementCollection
+    @ElementCollection(fetch = jakarta.persistence.FetchType.EAGER)
     @CollectionTable(name = "project_tech_stack", joinColumns = @JoinColumn(name = "project_id"))
     @Column(name = "tech")
     private List<String> techStack = new ArrayList<>();
