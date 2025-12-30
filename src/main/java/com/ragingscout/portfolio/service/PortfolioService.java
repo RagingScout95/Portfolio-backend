@@ -210,10 +210,23 @@ public class PortfolioService {
         if (project.getName() != null) existing.setName(project.getName());
         if (project.getDescription() != null) existing.setDescription(project.getDescription());
         if (project.getTechStack() != null) existing.setTechStack(project.getTechStack());
-        if (project.getLiveUrl() != null) existing.setLiveUrl(project.getLiveUrl());
-        if (project.getGithubUrl() != null) existing.setGithubUrl(project.getGithubUrl());
-        if (project.getDemoUrl() != null) existing.setDemoUrl(project.getDemoUrl());
-        if (project.getImageUrl() != null) existing.setImageUrl(project.getImageUrl());
+        // Allow setting liveUrl to null/empty to clear it
+        if (project.getLiveUrl() != null) {
+            String liveUrl = project.getLiveUrl().trim();
+            existing.setLiveUrl(liveUrl.isEmpty() ? null : liveUrl);
+        }
+        if (project.getGithubUrl() != null) {
+            String githubUrl = project.getGithubUrl().trim();
+            existing.setGithubUrl(githubUrl.isEmpty() ? null : githubUrl);
+        }
+        if (project.getDemoUrl() != null) {
+            String demoUrl = project.getDemoUrl().trim();
+            existing.setDemoUrl(demoUrl.isEmpty() ? null : demoUrl);
+        }
+        if (project.getImageUrl() != null) {
+            String imageUrl = project.getImageUrl().trim();
+            existing.setImageUrl(imageUrl.isEmpty() ? null : imageUrl);
+        }
         if (project.getDisplayOrder() != null) existing.setDisplayOrder(project.getDisplayOrder());
         return projectRepository.save(existing);
     }

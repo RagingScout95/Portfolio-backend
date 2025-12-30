@@ -42,7 +42,11 @@ public class GitHubService {
         project.setName(repo.getName());
         project.setDescription(repo.getDescription() != null ? repo.getDescription() : "");
         project.setGithubUrl(repo.getHtml_url());
-        project.setLiveUrl(repo.getHomepage());
+        // Only set liveUrl if homepage exists and is not empty
+        if (repo.getHomepage() != null && !repo.getHomepage().trim().isEmpty()) {
+            project.setLiveUrl(repo.getHomepage());
+        }
+        // Otherwise leave it as null (don't auto-fill)
         
         List<String> techStack = new ArrayList<>();
         if (repo.getLanguage() != null) {
