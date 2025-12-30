@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -150,8 +151,21 @@ public class PortfolioController {
     }
 
     @PostMapping("/projects/reorder")
-    public ResponseEntity<Void> reorderProjects(@RequestBody Map<String, List<Long>> request) {
-        portfolioService.reorderProjects(request.get("projectIds"));
+    public ResponseEntity<Void> reorderProjects(@RequestBody Map<String, List<Object>> request) {
+        List<Object> projectIdsObj = request.get("projectIds");
+        // Convert to Long list (handles both Integer and Long from JSON)
+        List<Long> projectIds = projectIdsObj.stream()
+            .map(id -> {
+                if (id instanceof Long) {
+                    return (Long) id;
+                } else if (id instanceof Number) {
+                    return ((Number) id).longValue();
+                } else {
+                    throw new IllegalArgumentException("Invalid project ID type: " + id.getClass().getName());
+                }
+            })
+            .collect(Collectors.toList());
+        portfolioService.reorderProjects(projectIds);
         return ResponseEntity.ok().build();
     }
 }
